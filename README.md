@@ -187,6 +187,140 @@ Once the model is deployed, you must disable the additional model authentication
 
 ![disable_auth](images/disable_auth.png)
 
+### 5a Serve Model with Cloudera Data Viz
+
+It is possible to leverage Cloudera Data Viz to perform calling into CML models. For that, the previous deployed model need to adhere to a particular API. The input of the model should be something like this :
+```
+{
+  “version”: “1.0”,
+  “data”: {
+    “colnames”: [“col1”, “col2”, “col3”],
+    “coltypes”: [“STRING”, “INT”, “REAL”],
+    “rows”: [
+      [“row1_col1”, row1_col2, row1_col3],
+      [“row2_col1”, row2_col2, row2_col3],
+      [“row3_col1”, row3_col2, row3_col3],
+      [“row4_col1”, row4_col2, row4_col3],
+      [“row5_col1”, row5_col2, row5_col3],
+    ]
+  }
+}
+```
+And the output from the model should look the same.
+
+To deploy the new model thath follows this particular API, from  to the Project page, click **Models > New
+Model** and create a new model with the following details:
+
+* **Name**: Explainer_Viz
+* **Description**: Explain customer churn prediction and make the result available to Cloudera Data Viz
+* **File**: 5a_Model_Serving_Data_Viz.py
+* **Function**: explain_viz
+* **Input**: 
+```
+{
+  "data": {
+    "colnames": [
+      "streamingtv",
+      "monthlycharges",
+      "phoneservice",
+      "paperlessbilling",
+      "partner",
+      "onlinebackup",
+      "gender",
+      "contract",
+      "totalcharges",
+      "streamingmovies",
+      "deviceprotection",
+      "paymentmethod",
+      "tenure",
+      "dependents",
+      "Onlinesecurity",
+      "multiplelines",
+      "internetservice",
+      "seniorcitizen",
+      "techsupport"
+    ],
+    "coltypes": [
+      "STRING",
+      "REAL",
+      "STRING",
+      "STRING",
+      "STRING",
+      "STRING",
+      "STRING",
+      "STRING",
+      "REAL",
+      "STRING",
+      "STRING",
+      "STRING",
+      "INT",
+      "STRING",
+      "STRING",
+      "STRING",
+      "STRING",
+      "STRING",
+      "STRING"
+    ],
+    "rows": [
+      [
+        "No",
+        70.35,
+        "No",
+        "No",
+        "No",
+        "No",
+        "Female",
+        "Month-to-month",
+        1397.475,
+        "No",
+        "No",
+        "Bank transfer (automatic)",
+        29,
+        "No",
+        "No",
+        "No",
+        "DSL",
+        0,
+        "No"
+      ],
+      [
+        "No",
+        10.35,
+        "No",
+        "No",
+        "No",
+        "No",
+        "Male",
+        "Month-to-month",
+        1397.475,
+        "No",
+        "No",
+        "Bank transfer (automatic)",
+        9,
+        "No",
+        "No",
+        "No",
+        "DSL",
+        1,
+        "No"
+      ]
+    ]
+  }
+}
+```
+* **Kernel**: Python 3
+* **Engine Profile**: 1vCPU / 2 GiB Memory
+
+Leave the rest unchanged. Click **Deploy Model** and the model will go through the build 
+process and deploy a REST endpoint. Once the model is deployed, you can test it is working 
+from the model Model Overview page.
+
+_**Note: This is important**_
+
+Once the model is deployed, you must disable the additional model authentication feature. In the model settings page, untick **Enable Authentication**.
+
+![disable_auth](images/disable_auth.png)
+
 ### 6 Deploy Application
 The next step is to deploy the Flask application. The **[Applications](https://docs.cloudera.com/machine-learning/cloud/applications/topics/ml-applications.html)** feature is still quite new for CML. For this project it is used to deploy a web based application that interacts with the underlying model created in the previous step.
 
